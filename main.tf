@@ -29,12 +29,12 @@ resource "aws_instance" "example" {
                 EOF
     
     tags {
-        Name = "busybox-test-server"
+        Name = "test-server"
     }
 }
 
 resource "aws_security_group" "instance" {
-    name = "busybox-example-instance"
+    name = "example-instance"
 
     ingress {
         from_port = "${var.server_port}"

@@ -1,6 +1,6 @@
 variable "server_port" {
     description = "port for HTTP requests"
-    default = 8080
+    default = 8888
 }
 
 output "public_ip" {
@@ -21,19 +21,20 @@ resource "aws_instance" "example" {
     user_data = <<-EOF
                 #!/bin/bash
                 apt-get -y update
+                apt-get -y upgrade
                 apt-get -y install git
-                git clone https://github.com/EvanKDodge/website.git
-                cd website
-                nohup busybox httpd -f -p "${var.server_port}" &
+                curl -fsSL get.docker.com | sh
+                git clone https://github.com/EvanKDodge/website.git /var/www/html
+                docker container run --name web1 -v /var/www/html:/usr/share/nginx/html -p "${var.server_port}":80 -d nginx
                 EOF
     
     tags {
-        Name = "busybox-test-server"
+        Name = "test-server"
     }
 }
 
 resource "aws_security_group" "instance" {
-    name = "busybox-example-instance"
+    name = "example-instance"
 
     ingress {
         from_port = "${var.server_port}"
